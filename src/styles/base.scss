@@ -1,0 +1,154 @@
+@import url(//db.onlinewebfonts.com/c/12420e8c141ca7c3dff41de2d59df13e?family=BeaufortForLoL-Bold);
+// Then import Bootstrap
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+@font-face {
+  font-family: "BeaufortForLoL";
+  src: url("../font/BeaufortForLoL-TTF/BeaufortforLOL-Bold.ttf")
+    format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BeaufortForLoL";
+  src: url("../font/BeaufortForLoL-TTF/BeaufortforLOL-Heavy.ttf")
+    format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BeaufortForLoL";
+  src: url("../font/BeaufortForLoL-TTF/BeaufortforLOL-Italic.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "BeaufortForLoL";
+  src: url("../font/BeaufortForLoL-TTF/BeaufortforLOL-Light.ttf")
+    format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BeaufortForLoL";
+  src: url("../font/BeaufortForLoL-TTF/BeaufortforLOL-Medium.ttf")
+    format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BeaufortForLoL";
+  src: url("../font/BeaufortForLoL-TTF/BeaufortforLOL-Regular.ttf")
+    format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Spiegel";
+  src: url("../font/Spiegel-TTF/Spiegel_TT_Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Spiegel";
+  src: url("../font/Spiegel-TTF/Spiegel_TT_SemiBold.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Spiegel";
+  src: url("../font/Spiegel-TTF/Spiegel_TT_Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
+  background-color: transparent;
+  color: rgb(1, 1, 1);
+  // font-size: 62.5%;
+  font-family: var(--font-body-family);
+  cursor: url("https://brand.riotgames.com/images/league-of-legends/cursor.png"),
+    auto;
+}
+
+a,
+button {
+  cursor: url("https://brand.riotgames.com/images/league-of-legends/cursor-pointer.png"),
+    auto !important;
+  text-decoration: none;
+}
+
+:root {
+  --font-heading-family: "BeaufortForLoL";
+  --font-body-family: "Spiegel";
+  --font-footer-family: "FF Mark W05", Arial, sans-serif;
+  --gray-200: #ededed;
+  --gray-300: #a2a2a2;
+  --black-200: #120d12;
+  --blue-fb: #1877f2;
+  --red-riot: #d13639;
+}
+
+/* Screen size ( Size này cùng với Theme Config global cho JS) */
+$SM: 576px;
+$MD: 992px;
+$LG: 992px;
+$XL: 1200px;
+
+/*
+* Responsive element follow by screen size
+*
+* @param $screen-size: screen size
+*
+* @example
+* .foo {
+*   font-size: 10px;
+*   @include responsive(MD) {
+*       font-size : 12px;
+*   }
+*   @include responsive(XL) {
+*       font-size : 14px;
+*   }
+*/
+@mixin responsive($screen-size) {
+  @if $screen-size == SM {
+    @media only screen and (min-width: $SM) {
+      @content;
+    }
+  } @else if $screen-size == MD {
+    @media only screen and (min-width: $MD) {
+      @content;
+    }
+  } @else if $screen-size == LG {
+    @media only screen and (min-width: $LG) {
+      @content;
+    }
+  } @else if $screen-size == XL {
+    @media only screen and (min-width: $XL) {
+      @content;
+    }
+  }
+}
+
+.icon {
+  max-width: 20px;
+  color: rgb(194, 144, 45);
+}
