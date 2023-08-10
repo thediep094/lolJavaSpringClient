@@ -37,22 +37,29 @@ export const login = async (dispatch: any, user: any) => {
 export const register = async (dispatch: any, user: any) => {
   dispatch(loginStart());
 
-  if (user.ingame) {
-    // const res2 = await axios.get(
-    //   `${API_LINK}/ingame/search?summonerName=${user.ingame}`
-    // );
-    // const data2 = await res2.data?.ingame?.profileIconId;
+  // const res2 = await axios.get(
+  //   `${API_LINK}/ingame/search?summonerName=${user.ingame}`
+  // );
+  // const data2 = await res2.data?.ingame?.profileIconId;
 
+  try {
     const res = await axios.post(`${API_LINK}/create/accounts`, {
-      name: user.fullname,
+      fullname: user.fullname,
       username: user.username,
       password: user.password,
+      mail: user.mail,
       ingame: user.ingame,
-      mainAva: user.mainAva,
+      avatar: user.mainAva,
     });
-
+    console.log(res);
+    const accessToken = localStorage.getItem("access_token");
+    // const res2 = await axios.post(`${API_LINK}/carts`, {
+    //   headers: {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    // });
     alert("Tạo tài khoản thành công");
-  }
+  } catch (error) {}
 };
 
 export const getDataFromAccessToken = async (
@@ -62,7 +69,11 @@ export const getDataFromAccessToken = async (
 ) => {
   dispatch(loginStart());
   try {
-    const res = await axios.get(`${API_LINK}/user/account/${username}`);
+    const res = await axios.get(`${API_LINK}/user/account/${username}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     // try {
     //   const resCart = await axios.post(
     //     `${API_LINK}/cart/`,

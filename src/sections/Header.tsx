@@ -26,7 +26,6 @@ function Header() {
     }
   }, []);
 
-  console.log(user);
 
   return (
     <div className="header">

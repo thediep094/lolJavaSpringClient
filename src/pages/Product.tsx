@@ -85,8 +85,6 @@ const Product = () => {
     setLoading(false);
   };
 
-  console.log(data, images);
-
   // const fetchComments = async () => {
   //   const res = await axios.get(`${API_LINK}/comment/${id}`);
   //   setComments(res.data.data);
@@ -98,28 +96,27 @@ const Product = () => {
     // fetchComments();
   }, []);
 
-  const handleAddToCart = (product_id: string) => {
-    const addCart = async () => {
-      setLoading(true);
-      try {
-        if (cartId) {
-          const data = {
-            productID: product_id,
-          };
-          const res = await axios.patch(
-            `${API_LINK}/cart/addProduct/${cartId}`,
-            data
-          );
-          alert("Add successfully");
+  const handleAddToCart = async (product_id: string) => {
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      const data = {
+        productId: product_id,
+        quantity: 1,
+      };
+      const res = await axios.put(
+        `${API_LINK}/cart-items/add/${user?.username}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    };
-
-    addCart();
+      );
+      console.log(`${API_LINK}/cart-items/add/${user?.username}`);
+      alert("Add successfully");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // const submitComment = async () => {
@@ -239,7 +236,7 @@ const Product = () => {
 
               <div
                 className="product-wrapper__info-button"
-                onClick={() => handleAddToCart(data._id)}
+                onClick={() => handleAddToCart(data.id)}
               >
                 <ButtonShop name={`${data.price} - Add to Cart`} />
               </div>
