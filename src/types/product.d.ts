@@ -25,3 +25,40 @@ export interface IComment {
   fullname: string[];
   ingame: string[];
 }
+
+export interface ICart {
+  cartDTO: {
+    id: number;
+    username: string;
+  };
+
+  items: ICartItem[];
+}
+
+export interface ICartItem {
+  cartItemDTO: {
+    id: number;
+    cartId: number;
+    productId: number;
+    quantity: number;
+  };
+
+  productDTO: IProductDTO;
+
+  images: ICartImages[];
+}
+
+export interface IProductDTO {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  compareAtPrice: number;
+  image: string | null;
+}
+
+export interface ICartImages {
+  id: number;
+  url: string;
+  productId: number;
+}

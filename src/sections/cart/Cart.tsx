@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/sections/cart/cart.scss";
 import ButtonShop from "../../components/button/ButtonShop";
-import { IProduct } from "../../types/product";
+import { ICart, ICartItem, IProduct, IProductDTO } from "../../types/product";
 import axios from "axios";
 import { API_IMAGES, API_LINK } from "../../default-value";
 import { useSelector } from "react-redux";
@@ -10,7 +10,7 @@ import Loading from "../../components/Loading";
 import { Link } from "react-router-dom";
 
 const Cart: React.FC = () => {
-  const [data, setData] = useState<IProduct[]>([]);
+  const [data, setData] = useState<ICart>();
   const user = useSelector((state: RootState) => state.account.user);
   const [cartId, setCartId] = useState("");
   const [totalPrice, setTotalPrice] = useState(0);
@@ -18,33 +18,25 @@ const Cart: React.FC = () => {
   const fetchCart = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(
-        `${API_LINK}/cart/`,
-        {
-          verify_id: localStorage?.getItem("accessToken"),
+      const res = await axios.get(`${API_LINK}/carts/${user?.username}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage?.getItem("accessToken")}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage?.getItem("accessToken")}`,
-          },
-        }
-      );
-      setData(res.data.cart.productList);
-      console.log(res.data.cart);
-      setCartId(res.data.cart._id);
+      });
+      setData(res.data.data);
       setTotalPrice(
-        res.data.cart.productList.reduce(
-          (acc: any, obj: any) => acc + obj.price * obj.quantity,
-          0
-        )
+        res.data.data.items.reduce((acc: number, obj: ICartItem) => {
+          return acc + obj.productDTO.price * obj.cartItemDTO.quantity;
+        }, 0)
       );
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
     }
   };
 
-  const handleQuantity = (id: string, quantity: number) => {
+  const handleQuantity = (id: number, quantity: number) => {
     const updateData = async () => {
       setLoading(true);
       try {
@@ -69,7 +61,7 @@ const Cart: React.FC = () => {
     updateData();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     const updateData = async () => {
       setLoading(true);
       try {
@@ -94,14 +86,16 @@ const Cart: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (user) {
+      fetchCart();
+    }
+  }, [user]);
   return (
     <div className="cart">
       <div className="container cart-wrapper">
         <div className="row cart-wrapper-row">
           <div className="cart-items col-lg-8 col-12">
-            <h1>Cart({data && data.length ? data.length : 0})</h1>
+            <h1>Cart({data && data.items.length ? data.items.length : 0})</h1>
             <div className="cart-items__wrapper">
               <div className="cart-items__wrapper-heading grid-row">
                 <div className="product-column">Product</div>
@@ -109,38 +103,38 @@ const Cart: React.FC = () => {
               </div>
 
               <div className="cart-items__tiems">
-                {data && data.length > 0
-                  ? data.map((item: IProduct) => {
+                {data?.items && data.items.length > 0
+                  ? data.items.map((item: ICartItem) => {
                       console.log(item);
                       return (
                         <div className="grid-row">
                           <div className="cart-items__tiem product-column">
                             <Link
-                              to={`/product/${item._id}`}
+                              to={`/product/${item.productDTO.id}`}
                               className="cart-items__item-img"
                             >
                               <img
-                                src={`${API_IMAGES}/images/${item.images}`}
+                                src={`${API_IMAGES}/images/${item.images[0].url}`}
                                 alt=""
                               />
                             </Link>
 
                             <div className="cart-items__item-info product-meta">
                               <Link
-                                to={`/product/${item._id}`}
+                                to={`/product/${item.productDTO.id}`}
                                 className="cart-items__item-info-title"
                               >
-                                {item.name}
+                                {item.productDTO.name}
                               </Link>
 
                               <label className="cart-items__item-info-quantity">
                                 Qty:{" "}
                                 <input
                                   type="number"
-                                  value={item.quantity}
+                                  value={item.cartItemDTO.quantity}
                                   onChange={(e) =>
                                     handleQuantity(
-                                      item._id,
+                                      item.productDTO.id,
                                       Number(e.target.value)
                                     )
                                   }
@@ -151,13 +145,15 @@ const Cart: React.FC = () => {
 
                           <div className="product-price">
                             <div className="cart-items__item-price">
-                              ${Number(item.price) * Number(item.quantity)}
+                              $
+                              {Number(item.cartItemDTO.quantity) *
+                                Number(item.productDTO.price)}
                             </div>
 
                             <div
                               className="cart-items__item-remove"
                               onClickCapture={() => {
-                                handleDelete(item._id);
+                                handleDelete(item.cartItemDTO.cartId);
                               }}
                             >
                               Remove
@@ -174,7 +170,8 @@ const Cart: React.FC = () => {
             <div className="cart-totals__info">
               <div className="cart-totals__info-heading">
                 <div className="cart-totals__subtitle">
-                  Subtotal({data && data.length ? data.length : 0} items)
+                  Subtotal({data && data.items.length ? data.items.length : 0}{" "}
+                  items)
                 </div>
                 <div className="cart-totals__price">${totalPrice}</div>
               </div>
