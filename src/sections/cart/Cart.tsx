@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/sections/cart/cart.scss";
 import ButtonShop from "../../components/button/ButtonShop";
-import { ICart, ICartItem, IProduct, IProductDTO } from "../../types/product";
+import {
+  ICart,
+  ICartItem,
+  ICartItemDTO,
+  IProduct,
+  IProductDTO,
+} from "../../types/product";
 import axios from "axios";
 import { API_IMAGES, API_LINK } from "../../default-value";
 import { useSelector } from "react-redux";
@@ -36,41 +42,17 @@ const Cart: React.FC = () => {
     }
   };
 
-  const handleQuantity = (id: number, quantity: number) => {
+  const handleQuantity = (item: ICartItemDTO, quantity: number) => {
     const updateData = async () => {
       setLoading(true);
       try {
         if (user) {
           const data = {
-            productID: id,
+            ...item,
             quantity: quantity,
           };
-          const res = await axios.patch(
-            `${API_LINK}/cart/updateQuantity/${cartId}`,
-            data
-          );
-          fetchCart();
-        }
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-      }
-    };
-
-    updateData();
-  };
-
-  const handleDelete = (id: number) => {
-    const updateData = async () => {
-      setLoading(true);
-      try {
-        if (user) {
-          const data = {
-            productID: id,
-          };
-          const res = await axios.patch(
-            `${API_LINK}/cart/deleteProduct/${cartId}`,
+          const res = await axios.put(
+            `${API_LINK}/cart-items/${item.id}`,
             data
           );
           fetchCart();
@@ -134,7 +116,7 @@ const Cart: React.FC = () => {
                                   value={item.cartItemDTO.quantity}
                                   onChange={(e) =>
                                     handleQuantity(
-                                      item.productDTO.id,
+                                      item.cartItemDTO,
                                       Number(e.target.value)
                                     )
                                   }
@@ -153,7 +135,7 @@ const Cart: React.FC = () => {
                             <div
                               className="cart-items__item-remove"
                               onClickCapture={() => {
-                                handleDelete(item.cartItemDTO.cartId);
+                                handleQuantity(item.cartItemDTO, 0);
                               }}
                             >
                               Remove

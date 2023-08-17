@@ -36,16 +36,18 @@ export interface ICart {
 }
 
 export interface ICartItem {
-  cartItemDTO: {
-    id: number;
-    cartId: number;
-    productId: number;
-    quantity: number;
-  };
+  cartItemDTO: ICartItemDTO;
 
   productDTO: IProductDTO;
 
   images: ICartImages[];
+}
+
+export interface ICartItemDTO {
+  id: number;
+  cartId: number;
+  productId: number;
+  quantity: number;
 }
 
 export interface IProductDTO {
